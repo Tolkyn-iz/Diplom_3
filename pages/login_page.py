@@ -1,21 +1,24 @@
-from selenium.webdriver.common.by import By
+import allure
 from pages.base_page import BasePage
+from locators.login_page_locators import LoginPageLocators
 
 
 class LoginPage(BasePage):
-    EMAIL_INPUT = (By.NAME, "name")
-    PASSWORD_INPUT = (By.NAME, "Пароль")
-    LOGIN_BTN = (By.XPATH, "//button[text()='Войти']")
-    
+
+    @allure.step("Ввод email: {email}")
     def enter_email(self, email):
-        self.find_element(self.EMAIL_INPUT).send_keys(email)
-    
+        self.find_element(LoginPageLocators.EMAIL_INPUT).send_keys(email)
+
+    @allure.step("Ввод пароля")
     def enter_password(self, password):
-        self.find_element(self.PASSWORD_INPUT).send_keys(password)
-    
-    def enter_credentials(self, email, password):
+        self.find_element(LoginPageLocators.PASSWORD_INPUT).send_keys(password)
+
+    @allure.step("Клик на кнопку 'Войти'")
+    def click_login_button(self):
+        self.click(LoginPageLocators.LOGIN_BTN)
+
+    @allure.step("Выполнение входа")
+    def login(self, email, password):
         self.enter_email(email)
         self.enter_password(password)
-    
-    def click_login_button(self):
-        self.click(self.LOGIN_BTN)
+        self.click_login_button()
