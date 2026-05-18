@@ -48,12 +48,20 @@ def driver(request):
         options = FirefoxOptions()
         options.add_argument("--width=1920")
         options.add_argument("--height=1080")
+        options.set_preference("dom.disable_beforeunload", True)
+        options.set_preference("dom.file.createInChild", True)
         driver = webdriver.Firefox(options=options)
 
     else:
         raise ValueError(f"Unsupported browser: {browser}")
 
+    driver.get(ENDPOINTS["main"])
+    driver.maximize_window()
+
     yield driver
+
+    # Очистка после каждого теста
+    force_close_overlay(driver)
     driver.quit()
 
 
@@ -80,7 +88,7 @@ def authenticated_driver(driver):
     email = f"test_{random.randint(10000, 99999)}@test.com"
     password = "Test123456"
     name = f"User_{random.randint(100, 999)}"
-    
+
     wait = WebDriverWait(driver, 15)
 
     # Регистрация
@@ -102,7 +110,7 @@ def authenticated_driver(driver):
     register_btn = driver.find_element(By.XPATH, "//button[text()='Зарегистрироваться']")
     driver.execute_script("arguments[0].click();", register_btn)
     
-    # Ждём появления кнопки "Войти" (успешная регистрация)
+    # Ждём появления кнопки "Войти"
     wait.until(EC.presence_of_element_located((By.XPATH, "//button[text()='Войти']")))
 
     # Вход
@@ -121,7 +129,7 @@ def authenticated_driver(driver):
     login_btn = driver.find_element(By.XPATH, "//button[text()='Войти']")
     driver.execute_script("arguments[0].click();", login_btn)
 
-    # Ждём появления кнопки "Оформить заказ" (успешный вход)
+    # Ждём появления кнопки "Оформить заказ"
     wait.until(EC.presence_of_element_located((By.XPATH, "//button[text()='Оформить заказ']")))
 
     return driver

@@ -23,9 +23,9 @@ class TestMainFunctionality:
         page = MainPage(driver_main_page)
         page.click_ingredient()
         assert page.is_modal_open() is True
-        page.close_modal()  # закрываем для чистоты
+        page.close_modal()  # cleanup
 
-    @allure.title("Модальное окно закрывается кликом по крестику")
+    @allure.title("Всплывающее окно закрывается кликом по крестику")
     def test_modal_closes_by_cross(self, driver_main_page):
         page = MainPage(driver_main_page)
         page.click_ingredient()
